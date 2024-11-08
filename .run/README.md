@@ -27,8 +27,7 @@ doesn't do on yours, notify me, please.
 This should start a running backend instance from your local branch:
 
 1. Clone repository
-2.
-Run ["To build DSpace images using code in your branch"](./To%20build%20DSpace%20images%20using%20code%20in%20your%20branch.run.xml)
+2. Run ["To build DSpace images using code in your branch"](./To%20build%20DSpace%20images%20using%20code%20in%20your%20branch.run.xml)
 3. Wait until everything is built and deployed.
 4. Visit [localhost:8080/server](localhost:8080/server).
 5. Create admin account by
