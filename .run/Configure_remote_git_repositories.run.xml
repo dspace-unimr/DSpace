@@ -1,0 +1,7 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" name="Configure_remote_git_repositories" type="CompoundRunConfigurationType">
+    <toRun name="Add_remote_DSpace_official" type="ShConfigurationType" />
+    <toRun name="Add_remote_unimr-dspace" type="ShConfigurationType" />
+    <method v="2" />
+  </configuration>
+</component>
