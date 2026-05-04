@@ -19,6 +19,9 @@ import org.dspace.content.Item;
 import org.dspace.content.logic.LogicalStatementException;
 import org.dspace.core.Constants;
 import org.dspace.core.Context;
+import org.dspace.eperson.Group;
+import org.dspace.eperson.factory.EPersonServiceFactory;
+import org.dspace.eperson.service.GroupService;
 
 /**
  * A condition that accepts a group and action parameter and returns true if the group
@@ -32,6 +35,8 @@ public class ReadableByGroupCondition extends AbstractCondition {
     // Authorize service
     AuthorizeService authorizeService = AuthorizeServiceFactory.getInstance().getAuthorizeService();
 
+    private static final GroupService groupService = EPersonServiceFactory.getInstance().getGroupService();
+
     /**
      * Return true if this item allows a specified action (eg READ, WRITE, ADD) by a specified group
      * @param context   DSpace context
@@ -42,23 +47,20 @@ public class ReadableByGroupCondition extends AbstractCondition {
     @Override
     public boolean getResult(Context context, Item item) throws LogicalStatementException {
 
-        String group = (String)getParameters().get("group");
-        String action = (String)getParameters().get("action");
+        String groupName = (String) getParameters().get("group");
+        String action = (String) getParameters().get("action");
 
         try {
-            List<ResourcePolicy> policies = authorizeService
-                .getPoliciesActionFilter(context, item, Constants.getActionID(action));
-            for (ResourcePolicy policy : policies) {
-                if (policy.getGroup() != null && policy.getGroup().getName().equals(group)) {
-                    return true;
-                }
-            }
+            // Lookup the group in question
+            Group group = groupService.findByName(context, groupName);
+            // Lookup list of authorized groups
+            List<Group> authorizedGroups = authorizeService
+                .getAuthorizedGroups(context, item, Constants.getActionID(action));
+            // Check if list contains group
+            return authorizedGroups.contains(group);
         } catch (SQLException e) {
-            log.error("Error trying to read policies for " + item.getHandle() + ": " + e.getMessage());
+            log.error("Error trying to find Group by name" + ": " + e.getMessage());
             throw new LogicalStatementException(e);
         }
-        log.debug("item " + item.getHandle() + " not readable by anonymous group");
-
-        return false;
     }
 }
